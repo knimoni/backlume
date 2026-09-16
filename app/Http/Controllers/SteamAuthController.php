@@ -24,12 +24,9 @@ class SteamAuthController extends Controller
             'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
         ];
 
-        return response()->json([
-            'app_url' => config('app.url'),
-            'realm' => $realm,
-            'return_to' => $returnTo,
-            'steam_url' => 'https://steamcommunity.com/openid/login?' . http_build_query($params),
-        ]);
+        return redirect()->away(
+            'https://steamcommunity.com/openid/login?' . http_build_query($params)
+        );
     }
 
     public function handleCallback(Request $request)
