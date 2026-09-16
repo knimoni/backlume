@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 
 class SteamAuthController extends Controller
 {
-    public function redirectToSteam(): RedirectResponse
+    public function redirectToSteam()
     {
         $realm = rtrim(config('app.url'), '/');
         $returnTo = $realm . '/auth/steam/callback';
@@ -24,9 +24,12 @@ class SteamAuthController extends Controller
             'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
         ];
 
-        return redirect()->away(
-            'https://steamcommunity.com/openid/login?' . http_build_query($params)
-        );
+        return response()->json([
+            'app_url' => config('app.url'),
+            'realm' => $realm,
+            'return_to' => $returnTo,
+            'steam_url' => 'https://steamcommunity.com/openid/login?' . http_build_query($params),
+        ]);
     }
 
     public function handleCallback(Request $request)
