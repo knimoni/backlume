@@ -12,11 +12,14 @@ class SteamAuthController extends Controller
 {
     public function redirectToSteam(): RedirectResponse
     {
+        $realm = rtrim(config('app.url'), '/');
+        $returnTo = $realm . '/auth/steam/callback';
+
         $params = [
             'openid.ns' => 'http://specs.openid.net/auth/2.0',
             'openid.mode' => 'checkid_setup',
-            'openid.return_to' => route('steam.callback'),
-            'openid.realm' => config('app.url'),
+            'openid.return_to' => $returnTo,
+            'openid.realm' => $realm,
             'openid.identity' => 'http://specs.openid.net/auth/2.0/identifier_select',
             'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
         ];
