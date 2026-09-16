@@ -14,7 +14,6 @@ class SteamController extends Controller
     public function addToLibrary(int $steamAppId)
     {
         $steam = app(SteamService::class);
-
         $user = Auth::user();
 
         $gameData = $steam->getAppDetails($steamAppId);
@@ -52,10 +51,18 @@ class SteamController extends Controller
     public function import()
     {
         $steam = app(SteamService::class);
-
         $user = Auth::user();
 
-        $games = $steam->getMockOwnedGames();
+        $games = $steam->getOwnedGames($user->steam_id);
+
+        if ($games === null) {
+            return redirect()
+                ->route('dashboard')
+                ->with(
+                    'error',
+                    'Library Steam tidak dapat diambil. Pastikan profil/game details Steam kamu tidak private.'
+                );
+        }
 
         foreach ($games as $steamGame) {
             $game = Game::updateOrCreate(
@@ -64,7 +71,7 @@ class SteamController extends Controller
                 ],
                 [
                     'name' => $steamGame['name'],
-                    'image_url' => $steamGame['image_url'],
+                    'image_url' => $steamGame['image_url'] ?? null,
                 ]
             );
 
@@ -74,7 +81,7 @@ class SteamController extends Controller
                     'game_id' => $game->id,
                 ],
                 [
-                    'playtime_minutes' => $steamGame['playtime_forever'],
+                    'playtime_minutes' => $steamGame['playtime_forever'] ?? 0,
                 ]
             );
         }
@@ -106,7 +113,6 @@ class SteamController extends Controller
     public function searchPage(Request $request)
     {
         $term = $request->query('term', '');
-
         $results = [];
 
         if ($term !== '') {
@@ -115,7 +121,6 @@ class SteamController extends Controller
             ]);
 
             $steam = app(SteamService::class);
-
             $results = $steam->searchApps($term);
 
             /** @var \App\Models\User $user */
