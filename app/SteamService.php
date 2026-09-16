@@ -30,8 +30,11 @@ class SteamService
             return null;
         }
 
-        return $response->json();
+        $data = $response->json();
+
+        return $data['response']['games'] ?? [];
     }
+
     public function getAppDetails(int $appId): ?array
     {
         $response = Http::get(

@@ -60,7 +60,7 @@ class SteamController extends Controller
                 ->route('dashboard')
                 ->with(
                     'error',
-                    'Library Steam tidak dapat diambil. Pastikan profil/game details Steam kamu tidak private.'
+                    'Library Steam tidak dapat diambil. Pastikan profil Steam dan detail game kamu tidak private.'
                 );
         }
 
@@ -71,7 +71,7 @@ class SteamController extends Controller
                 ],
                 [
                     'name' => $steamGame['name'],
-                    'image_url' => $steamGame['image_url'] ?? null,
+                    'image_url' => 'https://cdn.cloudflare.steamstatic.com/steam/apps/' . $steamGame['appid'] . '/header.jpg',
                 ]
             );
 
