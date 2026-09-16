@@ -66,3 +66,14 @@ Route::put('/library/{userGame}', [GameController::class, 'update'])
 Route::delete('/library/{userGame}', [GameController::class, 'destroy'])
     ->middleware('auth')
     ->name('library.destroy');
+
+Route::get('/debug-url', function () {
+    return response()->json([
+        'app_url' => config('app.url'),
+        'environment' => app()->environment(),
+        'url_root' => url('/'),
+        'asset' => asset('build/assets/app.css'),
+        'scheme' => request()->getScheme(),
+        'is_secure' => request()->isSecure(),
+    ]);
+});
